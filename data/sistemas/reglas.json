@@ -1,0 +1,25 @@
+{
+  "carrera": "Ingeniería de Sistemas y Computación",
+  "semestres": 10,
+  "creditos_total": 155,
+  "creditos_min": 7,
+  "creditos_max": 17,
+  "permite_retiro": true,
+  "nota_aprobatoria": 3.0,
+  "politica_repetidas": "todas",
+  "idiomas_pago_aparte": true,
+  "nota_minima_definitiva": 1.5,
+  "promedio_minimo": 3.25,
+  "promedio_distinguido": 3.95,
+  "creditos_distinguido": 16,
+  "ventana_semestres": 3,
+  "semana_limite_retiro": 14,
+  "fuente_reglas": "Reglamento de Estudiantes (Res. 09 de 2012 y modificaciones): arts. 51, 52, 57, 58, 62, 68, 98, 102 y 124-130",
+  "pesos_importancia": {
+    "creditos": 0.2,
+    "bloqueo": 0.5,
+    "puente": 0.3,
+    "dificultad": 0.0
+  },
+  "idiomas_semestres_adelante": null
+}
