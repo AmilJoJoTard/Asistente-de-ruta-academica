@@ -1,9 +1,0 @@
-participante,condicion,conjunto,tiempo_seg,correctas
-P1,manual,A,1360,1
-P2,programa,A,300,3
-P3,manual,B,1260,2
-P4,programa,B,280,3
-P5,programa,B,240,3
-P6,manual,B,1140,2
-P7,programa,A,300,3
-P8,manual,A,1200,2
