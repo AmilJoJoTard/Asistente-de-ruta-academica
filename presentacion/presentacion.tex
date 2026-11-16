@@ -1,0 +1,200 @@
+% Presentación (Beamer) - Proyecto final de Matemáticas Discretas (MAT 4021), Grupo 7
+\documentclass[aspectratio=169,14pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,colortbl,xcolor,tikz}
+\usepackage{hyperref}
+\usetikzlibrary{arrows.meta,positioning}
+
+\definecolor{tinta}{HTML}{1B2A38}
+\definecolor{acento}{HTML}{D9482B}
+\definecolor{azul}{HTML}{2F6DB5}
+\definecolor{papel}{HTML}{F6F4EF}
+\definecolor{gris}{HTML}{5B6B7A}
+\setbeamercolor{background canvas}{bg=papel}
+\setbeamercolor{normal text}{fg=tinta}
+\setbeamercolor{frametitle}{bg=tinta,fg=white}
+\setbeamercolor{structure}{fg=azul}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{frametitle}{\nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=3.4ex,dp=1.4ex,leftskip=1.2em]{frametitle}
+  \usebeamerfont{frametitle}\insertframetitle\end{beamercolorbox}}
+\setbeamerfont{frametitle}{series=\bfseries,size=\normalsize}
+\setbeamertemplate{footline}{\hfill{\scriptsize\color{gris}\insertframenumber\,/\,\inserttotalframenumber}\hspace{1.2em}\vspace{3pt}}
+\hypersetup{colorlinks=true,urlcolor=azul,linkcolor=azul}
+\newcommand{\pendiente}[1]{\textbf{\textcolor{red}{[#1]}}}
+\newcommand{\unidad}[1]{{\footnotesize\color{gris}#1}\par\vspace{2mm}}
+\newcommand{\tarjeta}[2]{\begin{minipage}[t]{0.3\textwidth}\centering{\fontsize{28}{30}\selectfont\bfseries\color{acento}#1}\\[2mm]{\small #2}\end{minipage}}
+\newcommand{\nodo}[1]{\tikz[baseline=-0.6ex]\node[draw=azul,rounded corners=2pt,fill=white,font=\scriptsize,inner sep=3pt,align=center,minimum width=1.25cm]{#1};}
+
+\title{Asistente de ruta académica}
+\subtitle{Modelación del plan de estudios con grafos, álgebra booleana y centralidad}
+\author{Grupo 7: Juan Ayala Díaz \and Bradley De La Hoz Guerrero \and Álvaro León Curvelo \and Alejandro Márquez Rincón}
+\institute{Matemáticas Discretas (MAT 4021) · Universidad del Norte}
+\date{Noviembre de 2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+\titlepage
+\vfill\hfill{\small Repositorio: \url{https://github.com/AmilJoJoTard/Asistente-de-ruta-academica}}
+\end{frame}
+
+\begin{frame}{El problema}
+\unidad{Muchos estudiantes no saben qué se les bloquea}\vspace{2mm}
+\tarjeta{65 \%}{no sabe con exactitud cuántos créditos ha aprobado}\hfill
+\tarjeta{42 \%}{no sabe con seguridad qué materias se le bloquean si pierde o retira una}\hfill
+\tarjeta{37 \%}{ha dudado entre retirar o perder sin saber las consecuencias}
+\vfill
+{\footnotesize\color{gris}Encuesta propia, anónima y voluntaria: 43 estudiantes de 17 programas (muestra por conveniencia; 84 \% cursa 2.º o 3.er semestre).}
+\end{frame}
+
+\begin{frame}{El plan de estudios es un grafo dirigido}
+\unidad{Unidades 3 y 4 · grafo acíclico (DAG) de prerrequisitos}
+\tarjeta{62}{vértices: materias, cada una con sus créditos}\hfill
+\tarjeta{40}{aristas: 39 prerrequisitos y 1 correquisito}\hfill
+\tarjeta{155}{créditos en 10 semestres (Ing. de Sistemas)}
+\vspace{3mm}
+
+\noindent {\small Cadena más larga de prerrequisitos (9 materias):}\\[1mm]
+\resizebox{\textwidth}{!}{\begin{tikzpicture}[>=Stealth,every node/.style={draw=azul,rounded corners=2pt,fill=white,font=\footnotesize,align=center,minimum width=2.5cm,minimum height=0.8cm}]
+\node (a) {Alg. I};
+\node[right=6mm of a] (b) {Alg. II};
+\node[right=6mm of b] (c) {Est. Datos I};
+\node[right=6mm of c] (d) {Est. Datos II};
+\node[right=6mm of d] (e) {Alg. y Compl.};
+\node[below=6mm of e] (f) {Bases de Datos};
+\node[left=6mm of f] (g) {Diseño SW I};
+\node[left=6mm of g] (h) {Diseño SW II};
+\node[left=6mm of h] (i) {Proyecto Final};
+\foreach \p/\q in {a/b,b/c,c/d,d/e,e/f,f/g,g/h,h/i}{\draw[->,azul] (\p) -- (\q);}
+\end{tikzpicture}}
+\vfill
+{\scriptsize\color{gris}Perder Algoritmia y Programación I bloquea 12 materias en cadena (BFS).}
+\end{frame}
+
+\begin{frame}{La regla de matrícula es una función booleana}
+\unidad{Unidad 2 · álgebra booleana: expresión, Karnaugh y De Morgan}
+\begin{columns}[T]
+\begin{column}{0.58\textwidth}
+\footnotesize
+Con $A_x$: $x$ aprobada y $C_x$: $x$ cursando (ambas a la vez es imposible: \emph{don't care}):
+\[ \mathrm{Disp}(C2)=\overline{A_{C2}}\cdot\overline{C_{C2}}\cdot A_{C1}\cdot(A_F+C_F) \]
+\begin{itemize}
+\item Forma canónica: $R=\Sigma m(5,6)+d(3,7)$
+\item Karnaugh con \emph{don't cares}: $R=A_{C1}A_F+A_{C1}C_F$
+\item De Morgan: $\overline R=\overline{A_{C1}}+\overline{A_F}\,\overline{C_F}$
+\end{itemize}
+\end{column}
+\begin{column}{0.38\textwidth}
+\centering\small Mapa de Karnaugh de $R$\\[2mm]
+\begin{tabular}{c|cccc}
+ & \multicolumn{4}{c}{$A_F\,C_F$}\\
+$A_{C1}$ & 00 & 01 & 11 & 10\\\hline
+0 & 0 & 0 & X & 0\\
+1 & 0 & \cellcolor{azul!25}1 & \cellcolor{azul!25}X & \cellcolor{azul!25}1\\
+\end{tabular}
+\end{column}
+\end{columns}
+\vfill
+{\scriptsize\color{gris}$\overline R$ lista lo que le falta al estudiante. Verificado en 62 materias y 17\,750 combinaciones: 0 diferencias con el grafo.}
+\end{frame}
+
+\begin{frame}{Importancia: las materias más críticas}
+\unidad{Unidad 4 · centralidad: grado, alcance e intermediación}
+\centering\small
+\begin{tabular}{lrrrr}
+\toprule
+Materia & Créditos & Bloquea & Puente & Puntaje\\
+\midrule
+Estructura de Datos II & 3 & 6 & 0.014 & 0.67\\
+Algoritmia y Programación II & 3 & 9 & 0.008 & 0.66\\
+Estructura de Datos I & 3 & 7 & 0.011 & 0.64\\
+Algoritmia y Programación I & 3 & 12 & 0.000 & 0.62\\
+Cálculo I & 5 & 10 & 0.000 & 0.62\\
+\bottomrule
+\end{tabular}
+
+\vspace{2mm}
+$I(v)=0.2\,\hat c(v)+0.5\,\hat b(v)+0.3\,\hat p(v)$, cada componente dividido entre su máximo.
+\vfill
+{\scriptsize\color{gris}Bloqueo = alcance; puente = intermediación. Cercanía armónica: la red no es conexa. Pesos: decisión de modelación.}
+\end{frame}
+
+\begin{frame}{Validación: reproduce el promedio oficial}
+\unidad{Caso real con resultado conocido}
+\begin{columns}[c]
+\begin{column}{0.4\textwidth}
+\centering{\fontsize{60}{62}\selectfont\bfseries\color{acento}3.70}\\[2mm]
+{\small PGA de la aplicación de la universidad (estudiante real, 27 créditos que cuentan)}
+\end{column}
+\begin{column}{0.56\textwidth}
+\small
+\begin{tabular}{lr}
+\toprule
+Cómo se cuenta & Resultado\\
+\midrule
+Todos los intentos, sin retiradas & \textbf{3.70}\\
+Solo el último intento & 3.85\\
+\bottomrule
+\end{tabular}
+
+\vspace{3mm}
+72 pruebas automáticas y equivalencia lógica de la regla booleana.
+
+\vspace{2mm}Piloto con 8 estudiantes: 20.7 min a mano y 4.7 min con el programa (77 \% menos).
+\end{column}
+\end{columns}
+\vfill
+{\footnotesize\color{gris}Las notas de la aplicación son una guía y no oficiales. Caso real de un integrante del grupo, sin nombre.}
+\end{frame}
+
+\begin{frame}{Demostración con el historial de validación}
+\small
+\begin{tabular}{p{0.4\textwidth}p{0.52\textwidth}}
+\toprule
+Pregunta & Respuesta\\
+\midrule
+¿Puedo matricular Cálculo III? & No: te falta aprobar Cálculo II (estado: retirada)\\[1mm]
+¿Qué puedo matricular el próximo semestre? & 14 créditos sugeridos: Cálculo II, Física Calor-Ondas, POO y Estructura de Datos I\\[1mm]
+¿Y si pierdo Algoritmia II? & El promedio baja de 3.70 a entre 3.48 y 3.62; sigue en estado normal\\[1mm]
+¿Puedo retirarla? & Sí: quedarías con 10 créditos (el mínimo es 7)\\
+\bottomrule
+\end{tabular}
+\vfill
+{\scriptsize\color{gris}\texttt{python main.py --historial}\\\texttt{data/estudiantes/validacion\_pga.csv}}
+\end{frame}
+
+
+\begin{frame}{Conclusiones y limitaciones}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Conclusiones}
+\small\begin{itemize}
+\item El plan es un DAG y las consultas se resuelven en tiempo lineal.
+\item La regla booleana equivale exactamente al grafo.
+\item El promedio coincide con el oficial en un caso real.
+\item La centralidad señala las materias más críticas.
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{Limitaciones}
+\small\begin{itemize}
+\item Solo Ingeniería de Sistemas.
+\item Encuesta por conveniencia ($n=43$).
+\item No modela la oferta real ni el límite por idiomas.
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[plain]
+\vfill\centering{\fontsize{28}{30}\selectfont\bfseries Gracias. ¿Preguntas?}\\[8mm]
+{\small Código, datos y README para reproducir el proyecto:}\\[2mm]
+\url{https://github.com/AmilJoJoTard/Asistente-de-ruta-academica}
+\vfill
+\end{frame}
+
+\end{document}
