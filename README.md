@@ -31,7 +31,9 @@ python3 -m venv .venv
 (Si ya tienes Python con las librerías, basta `python -m pip install -r requirements.txt` y `python main.py`.)
 
 ## Cómo ejecutarlo
-`python main.py` abre un **menú de preguntas** con el historial del caso de validación (`data/estudiantes/validacion_pga.csv`).
+`python gui.py` Usalo en caso de que quieras ver una interfaz más grafica en vez de mirar todo en la terminal.
+ó
+`python main.py` abre un **menú de preguntas** con el historial del caso de validación (`data/estudiantes/validacion_pga.csv`) (Con esta ejecución tienes más dominio sobre las deciciones que quieras tomar sobre el programa).
 Para usar otro historial (mismo formato que `ejemplo.csv`):
 ```
 python main.py --historial data/estudiantes/mi_historial.csv
